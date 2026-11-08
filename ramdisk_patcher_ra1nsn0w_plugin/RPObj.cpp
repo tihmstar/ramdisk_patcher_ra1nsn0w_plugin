@@ -28,6 +28,7 @@ RPObj::~RPObj(){
 bool RPObj::argparse(std::string longopt, const char *optarg){
     bool ret = false;
     if (longopt == "rdisk-replace-reboot") {
+        info("Enabling replace reboot");
         _replaceReboot = optarg;
         ret = true;
     }
@@ -53,7 +54,9 @@ tihmstar::Mem RPObj::ramdiskPatcher(const void *buf, size_t bufSize){
     if (_replaceReboot){
         auto nf = tihmstar::readFile(_replaceReboot);
         ramdisk.putFile("/sbin/reboot", nf.data(), nf.size());
+        info("Ramdisk binary replaced!");
     }
 
+    info("Ramdisk generated!");
     return {ramdisk.buf(), ramdisk.bufSize()};
 }

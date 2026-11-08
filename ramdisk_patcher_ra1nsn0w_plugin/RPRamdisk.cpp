@@ -82,6 +82,7 @@ void RPRamdisk::putFileHFS(const char *path, const void *buf, size_t bufSize){
     af = createAbstractFileFromMemory(&locbuf, bufSize);
     add_hfs(_hfs, af, path); af = NULL;
     chmodFile(path, 0777, _hfs);
+    updateVolume(_hfs);
 }
 
 void RPRamdisk::putFileAPFS(const char *path, const void *buf, size_t bufSize){

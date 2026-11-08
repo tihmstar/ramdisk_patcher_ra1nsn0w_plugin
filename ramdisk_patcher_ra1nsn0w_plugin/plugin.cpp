@@ -22,7 +22,7 @@ static const char helpscreen[] =
 ;
 
 static struct option longopts[] = {
-    { "rdisk-replace-reboot",      no_argument,    NULL,  0  },
+    { "rdisk-replace-reboot",      required_argument,    NULL,  0  },
     { NULL, 0, NULL, 0 }
 };
 
