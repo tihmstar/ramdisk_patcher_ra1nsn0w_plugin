@@ -20,6 +20,7 @@ int main_r(int argc, const char * argv[]) {
     
     RPObj rp;
     rp.argparse("rdisk-replace-reboot", "/bin/ls");
+    rp.argparse("rpatch-asr-sigcheck", NULL);
     auto rd = rp.ramdiskPatcher(rdsk.data(), rdsk.size());
     
     tihmstar::writeFile("dbg.dmg", rd.data(), rd.size());

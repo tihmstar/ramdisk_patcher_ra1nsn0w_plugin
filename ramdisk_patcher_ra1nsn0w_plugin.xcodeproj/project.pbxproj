@@ -24,6 +24,7 @@
 		8782F3DF30A0AC6C00464B06 /* libcommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8782F3DE30A0AC6300464B06 /* libcommon.a */; };
 		8782F3E130A0AD4500464B06 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8782F3E030A0AD3F00464B06 /* libz.tbd */; };
 		8782F3E330A0AF4000464B06 /* libhfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8782F3E230A0AF3900464B06 /* libhfs.a */; };
+		87D5EE7130A6C7D5000DA783 /* RPPF32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 87D5EE7030A6C7D5000DA783 /* RPPF32.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -72,6 +73,8 @@
 		8782F3DE30A0AC6300464B06 /* libcommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcommon.a; path = ../../../../usr/local/lib/libcommon.a; sourceTree = "<group>"; };
 		8782F3E030A0AD3F00464B06 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		8782F3E230A0AF3900464B06 /* libhfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhfs.a; path = ../../../../usr/local/lib/libhfs.a; sourceTree = "<group>"; };
+		87D5EE6F30A6C7D5000DA783 /* RPPF32.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RPPF32.hpp; sourceTree = "<group>"; };
+		87D5EE7030A6C7D5000DA783 /* RPPF32.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RPPF32.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +118,8 @@
 			children = (
 				2A847EBF2DD4AE5C0052DA3E /* RPRamdisk.hpp */,
 				2A847EC02DD4AE5C0052DA3E /* RPRamdisk.cpp */,
+				87D5EE6F30A6C7D5000DA783 /* RPPF32.hpp */,
+				87D5EE7030A6C7D5000DA783 /* RPPF32.cpp */,
 				2A847E9B2DD4A5730052DA3E /* RPObj.hpp */,
 				2A847E9C2DD4A5730052DA3E /* RPObj.cpp */,
 				2A847ED12DD4BA2D0052DA3E /* utils.hpp */,
@@ -203,6 +208,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87D5EE7130A6C7D5000DA783 /* RPPF32.cpp in Sources */,
 				2A847ED52DD4BED40052DA3E /* plugin.cpp in Sources */,
 				2A847EC12DD4AE5C0052DA3E /* RPRamdisk.cpp in Sources */,
 				2A847ED32DD4BA2D0052DA3E /* utils.cpp in Sources */,

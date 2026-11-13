@@ -13,6 +13,7 @@
 
 class RPObj : public tihmstar::ra1nsn0w::PluginObj {
     bool _haveAnyRamdiskPatchesEnabled;
+    bool _doRPatchASRSigchek;
     const char *_replaceReboot;
 public:
     RPObj();

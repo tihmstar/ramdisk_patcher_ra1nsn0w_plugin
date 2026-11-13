@@ -42,9 +42,11 @@ CFLAGS+=" -std=c11"
 # Checks for libraries.
 LIBGENERAL_REQUIRES_STR="libgeneral >= 92"
 LIBRA1NSN0W_REQUIRES_STR="libra1nsn0w >= 63"
+LIBPATCHFINDER_REQUIRES_STR="libpatchfinder >= 178"
 
 PKG_CHECK_MODULES(libgeneral, $LIBGENERAL_REQUIRES_STR)
 PKG_CHECK_MODULES(libra1nsn0w, $LIBRA1NSN0W_REQUIRES_STR)
+PKG_CHECK_MODULES(libpatchfinder, $LIBPATCHFINDER_REQUIRES_STR)
 
 AC_ARG_ENABLE([debug],
             [AS_HELP_STRING([--enable-debug],

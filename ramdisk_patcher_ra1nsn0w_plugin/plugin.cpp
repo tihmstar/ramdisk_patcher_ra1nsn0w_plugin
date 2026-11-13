@@ -17,12 +17,14 @@ using namespace tihmstar::ra1nsn0w;
 #pragma mark global vars
 static const char helpscreen[] =
 "Ramdisk Patcher:\n"
+"      --rpatch-asr-sigcheck\t\t\tPatch ASR Sigchecks (inside ramdisk)\n" \
 "      --rdisk-replace-reboot <PATH>\t\tReplace /sbin/reboot with custom file\n" \
 "\n"
 ;
 
 static struct option longopts[] = {
-    { "rdisk-replace-reboot",      required_argument,    NULL,  0  },
+    { "rpatch-asr-sigcheck",        no_argument,            NULL,  0  },
+    { "rdisk-replace-reboot",       required_argument,      NULL,  0  },
     { NULL, 0, NULL, 0 }
 };
 
