@@ -101,7 +101,9 @@ jobs:
           make -j || make
         fi
     - name: make install
-      run: make install
+      run: |
+        make install
+        rm -rf $GITHUB_WORKSPACE/$BUILDROOT/*.la $GITHUB_WORKSPACE/$BUILDROOT/*.so.* $GITHUB_WORKSPACE/$BUILDROOT/*.*.dylib
     - uses: actions/upload-artifact@v4
       with:
         name: ${{ env.BUILDROOT }}
