@@ -103,7 +103,11 @@ jobs:
     - name: make install
       run: |
         make install
-        rm -rf $GITHUB_WORKSPACE/$BUILDROOT/*.la $GITHUB_WORKSPACE/$BUILDROOT/*.so.* $GITHUB_WORKSPACE/$BUILDROOT/*.*.dylib
+        mkdir stage
+        cp $GITHUB_WORKSPACE/$BUILDROOT/*.dylib stage/ || true
+        cp $GITHUB_WORKSPACE/$BUILDROOT/*.so stage/ || true
+        rm -rf $GITHUB_WORKSPACE/$BUILDROOT
+        mv stage $GITHUB_WORKSPACE/$BUILDROOT
     - uses: actions/upload-artifact@v4
       with:
         name: ${{ env.BUILDROOT }}
