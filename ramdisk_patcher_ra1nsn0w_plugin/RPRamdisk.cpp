@@ -72,21 +72,13 @@ void RPRamdisk::putFileHFS(const char *path, const void *buf, size_t bufSize){
         safeFree(locbuf);
     });
     removeFile(path, _hfs);
-    {
-        size_t addsize = bufSize & ~0x3fff;
-        if (bufSize & 0x3fff) addsize += 0x4000;
-        grow_hfs(_hfs, _af->getLength(_af) +addsize);
-    }
+    growRamdisk(bufSize);
     locbuf = malloc(bufSize);
     memcpy(locbuf, buf, bufSize);
     af = createAbstractFileFromMemory(&locbuf, bufSize);
     add_hfs(_hfs, af, path); af = NULL;
     chmodFile(path, 0777, _hfs);
     updateVolume(_hfs);
-}
-
-void RPRamdisk::putFileAPFS(const char *path, const void *buf, size_t bufSize){
-    reterror("TODO");
 }
 
 #pragma mark public
@@ -100,10 +92,16 @@ void RPRamdisk::putFile(const char *path, const void *buf, size_t bufSize){
     reterror("No ramdisk backend available for file creation");
 }
 
+void RPRamdisk::growRamdisk(size_t size){
+    size_t addsize = size & ~0x3fff;
+    if (size & 0x3fff) addsize += 0x4000;
+    grow_hfs(_hfs, _hfs->volumeHeader->totalBlocks * _hfs->volumeHeader->blockSize +addsize);
+}
+
 const void *RPRamdisk::buf(){
     return _locbuf;
 }
 
 size_t RPRamdisk::bufSize(){
-    return _af->getLength(_af);
+    return _hfs->volumeHeader->totalBlocks * _hfs->volumeHeader->blockSize;
 }

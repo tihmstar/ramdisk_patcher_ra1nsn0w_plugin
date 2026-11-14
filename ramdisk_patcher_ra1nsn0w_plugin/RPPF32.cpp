@@ -37,25 +37,42 @@ std::vector<patch> RPPF32::getASRSigcheckPatches(){
     pushINSN(thumb::new_T2_immediate_b(ref, ref2));
 
     {
-        loc_t str = findstr("No image hash to compare.", false);
-        debug("str=0x%016llx",str);
+        loc_t str = 0;
+        try {
+            str = findstr("No image hash to compare.", false);
+        } catch (...) {
+            //
+        }
+        if (str){
+            /*
+                iPhone5,2 iOS 10.3.4
+             */
+            debug("str=0x%016llx",str);
 
-        loc_t ref = find_literal_ref(str);
-        debug("ref=0x%016llx",ref);
-        auto iter = _vmemThumb->getIter(ref);
-        while ((--iter).supertype() != arm32::sut_branch_imm)
-            ;
-        ++iter;
-        loc_t blk = iter;
-        debug("blk=0x%016llx",blk);
-        
-        loc_t bref = find_branch_ref(blk, -0x400);
-        debug("bref=0x%016llx",bref);
-        iter = bref;
-        pushINSN(thumb::new_T1_general_nop(iter.pc()));
-        if (iter().insnsize() == 4){
-            pushINSN(thumb::new_T1_general_nop(iter.pc()+2));
-        }        
+            loc_t ref = find_literal_ref(str);
+            debug("ref=0x%016llx",ref);
+            auto iter = _vmemThumb->getIter(ref);
+            while ((--iter).supertype() != arm32::sut_branch_imm)
+                ;
+            ++iter;
+            loc_t blk = iter;
+            debug("blk=0x%016llx",blk);
+            
+            loc_t bref = find_branch_ref(blk, -0x400);
+            debug("bref=0x%016llx",bref);
+            iter = bref;
+            pushINSN(thumb::new_T1_general_nop(iter.pc()));
+            if (iter().insnsize() == 4){
+                pushINSN(thumb::new_T1_general_nop(iter.pc()+2));
+            }
+        }
+    }
+    
+    {
+        /*
+            iPhone5,2 iOS 9.3.5
+         */
+        //missing
     }
     
     RETCACHEPATCHES;
@@ -65,7 +82,7 @@ void RPPF32::applyPatches(std::vector<tihmstar::patchfinder::patch> patches){
     for (auto p : patches) {
         uint8_t *file = (uint8_t*)buf();
         uint64_t off = (uint64_t)((const uint8_t *)memoryForLoc(p._location) - file);
-#ifdef XCODE
+#ifdef DEBUG
         printf("RPPF32: Applying patch=%p : ",(void*)p._location);
         for (int i=0; i<p.getPatchSize(); i++) {
             printf("%02x",((uint8_t*)p.getPatch())[i]);
@@ -79,7 +96,7 @@ void RPPF32::applyPatches(std::vector<tihmstar::patchfinder::patch> patches){
 #endif
         memcpy(&file[off], p.getPatch(), p.getPatchSize());
     }
-#ifdef XCODE
+#ifdef DEBUG
     debug("RPPF32: Patches applied!");
 #endif
 }
