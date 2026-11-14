@@ -17,7 +17,7 @@ class RPObj : public tihmstar::ra1nsn0w::PluginObj {
     const char *_replaceReboot;
 public:
     RPObj();
-    virtual ~RPObj() override;
+    ~RPObj();
     
     virtual bool argparse(std::string longopt, const char *optarg) override;
     virtual std::vector<tihmstar::patchfinder::patch> patcher(uint32_t component, const void *buf, size_t bufSize) override;

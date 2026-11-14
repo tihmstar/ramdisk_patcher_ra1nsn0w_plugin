@@ -1,6 +1,6 @@
 AM_CFLAGS = $(libapfstool_CFLAGS) $(libgeneral_CFLAGS) $(libra1nsn0w_CFLAGS) $(libpatchfinder_CFLAGS)
 AM_CXXFLAGS = $(AM_CFLAGS)
-AM_LDFLAGS = $(libapfstool_LIBS) $(libgeneral_LIBS) $(libra1nsn0w_LIBS) $(libpatchfinder_LIBS)
+AM_LDFLAGS = $(libapfstool_LIBS) $(libgeneral_LIBS) $(libpatchfinder_LIBS)
 
 lib_LTLIBRARIES = libramdisk_patcher_ra1nsn0w_plugin.la
 

@@ -64,7 +64,7 @@ LT_INIT
 
 AC_CHECK_FUNCS([mkdtemp])
 
-LDFLAGS+=" -no-undefined -lcommon -ldmg -lhfs"
+LDFLAGS+=" -no-undefined -lcommon -ldmg -lhfs -lz"
 
 AC_CONFIG_FILES([Makefile
                 ramdisk_patcher_ra1nsn0w_plugin/Makefile])

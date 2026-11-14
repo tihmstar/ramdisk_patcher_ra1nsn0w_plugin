@@ -32,20 +32,10 @@ static std::shared_ptr<PluginObj> RPObj_init(void){
     return std::make_shared<RPObj>();
 }
 
-static Plugin gPluginDef = {
+Plugin pluginDef = {
     .apiVersion = RA1NSN0W_PLUGIN_API_VERSION,
+    .pluginName = "ramdisk_patcher",
     .cmdHelp = helpscreen,
     .longopts = longopts,
     .init = RPObj_init,
 };
-
-#pragma mark constructor
-__attribute__ ((constructor))
-void constructor(void){
-    pluginRegister(&gPluginDef);
-}
-
-__attribute__((destructor))
-void destructor(void){
-    pluginUnregister(&gPluginDef);
-}

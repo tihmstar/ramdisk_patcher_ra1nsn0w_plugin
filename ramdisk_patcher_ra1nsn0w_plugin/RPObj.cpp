@@ -45,7 +45,7 @@ RPObj::RPObj()
 }
 
 RPObj::~RPObj(){
-    //
+    info("~RPObj");
 }
 
 #pragma mark public

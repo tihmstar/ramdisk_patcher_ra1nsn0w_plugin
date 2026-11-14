@@ -11,8 +11,6 @@
 		2A847E9F2DD4A5730052DA3E /* RPObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A847E9C2DD4A5730052DA3E /* RPObj.cpp */; };
 		2A847EA22DD4A5BA0052DA3E /* libgeneral.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A847EA12DD4A5BA0052DA3E /* libgeneral.0.dylib */; };
 		2A847EA32DD4A5BA0052DA3E /* libgeneral.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2A847EA12DD4A5BA0052DA3E /* libgeneral.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		2A847EA62DD4A5C40052DA3E /* libra1nsn0w.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A847EA52DD4A5C40052DA3E /* libra1nsn0w.0.dylib */; };
-		2A847EA72DD4A5C40052DA3E /* libra1nsn0w.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2A847EA52DD4A5C40052DA3E /* libra1nsn0w.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2A847EC12DD4AE5C0052DA3E /* RPRamdisk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A847EC02DD4AE5C0052DA3E /* RPRamdisk.cpp */; };
 		2A847ECC2DD4B5B20052DA3E /* libpatchfinder.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A847ECB2DD4B5B20052DA3E /* libpatchfinder.0.dylib */; };
 		2A847ECD2DD4B5B20052DA3E /* libpatchfinder.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 2A847ECB2DD4B5B20052DA3E /* libpatchfinder.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -43,7 +41,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2A847EA72DD4A5C40052DA3E /* libra1nsn0w.0.dylib in Embed Libraries */,
 				2A847ECD2DD4B5B20052DA3E /* libpatchfinder.0.dylib in Embed Libraries */,
 				2A847EA32DD4A5BA0052DA3E /* libgeneral.0.dylib in Embed Libraries */,
 				2A847ED02DD4B7FD0052DA3E /* libinsn.0.dylib in Embed Libraries */,
@@ -83,7 +80,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8782F3DF30A0AC6C00464B06 /* libcommon.a in Frameworks */,
-				2A847EA62DD4A5C40052DA3E /* libra1nsn0w.0.dylib in Frameworks */,
 				8782F3E130A0AD4500464B06 /* libz.tbd in Frameworks */,
 				2A847ECC2DD4B5B20052DA3E /* libpatchfinder.0.dylib in Frameworks */,
 				2A847EA22DD4A5BA0052DA3E /* libgeneral.0.dylib in Frameworks */,
