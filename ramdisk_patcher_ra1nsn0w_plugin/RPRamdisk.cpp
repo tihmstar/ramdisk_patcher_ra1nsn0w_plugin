@@ -10,7 +10,7 @@
 #include <libgeneral/macros.h>
 
 extern "C" {
-#include <xpwn/hfs/hfslib.h>
+#include <libdmg-hfsplus/hfs/hfslib.h>
 char endianness;
 }
 

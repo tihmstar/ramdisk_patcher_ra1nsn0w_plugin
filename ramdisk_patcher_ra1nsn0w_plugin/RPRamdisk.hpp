@@ -15,7 +15,7 @@
 #include <stdlib.h>
 
 extern "C" {
-#include <xpwn/dmg/dmgfile.h>
+#include <libdmg-hfsplus/dmg/dmgfile.h>
 }
 
 class RPRamdisk {
