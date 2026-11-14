@@ -106,6 +106,7 @@ jobs:
         mkdir stage
         cp $GITHUB_WORKSPACE/$BUILDROOT/*.dylib stage/ || true
         cp $GITHUB_WORKSPACE/$BUILDROOT/*.so stage/ || true
+        find $GITHUB_WORKSPACE/$BUILDROOT -name '*.*.dylib' -exec rm {} \;
         rm -rf $GITHUB_WORKSPACE/$BUILDROOT
         mv stage $GITHUB_WORKSPACE/$BUILDROOT
     - uses: actions/upload-artifact@v4
