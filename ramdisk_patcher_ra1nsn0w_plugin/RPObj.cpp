@@ -12,6 +12,8 @@
 #include <libgeneral/macros.h>
 #include <libgeneral/Utils.hpp>
 
+#include <unistd.h>
+
 using namespace tihmstar;
 
 #define ASR_RAMDISK_PATH "/usr/sbin/asr"
