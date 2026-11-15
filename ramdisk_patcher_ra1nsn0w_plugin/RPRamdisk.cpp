@@ -71,14 +71,58 @@ void RPRamdisk::putFileHFS(const char *path, const void *buf, size_t bufSize){
         }
         safeFree(locbuf);
     });
-    removeFile(path, _hfs);
-    growRamdisk(bufSize);
     locbuf = malloc(bufSize);
     memcpy(locbuf, buf, bufSize);
     af = createAbstractFileFromMemory(&locbuf, bufSize);
     add_hfs(_hfs, af, path); af = NULL;
     chmodFile(path, 0777, _hfs);
-    updateVolume(_hfs);
+}
+
+void RPRamdisk::removeFileHFS(const char *path){
+    ::removeFile(path, _hfs);
+}
+
+std::vector<std::string> RPRamdisk::listFilesAtPathHFS(const char *path, bool recursive){
+    HFSPlusCatalogRecord *record = NULL;
+    cleanup([&]{
+        safeFree(record);
+    });
+    char* name = NULL; //dont't free this? idk
+    std::vector<std::string> ret;
+    assure(record = getRecordFromPath(path, _hfs, &name, NULL));
+    
+    if(record != NULL) {
+        if(record->recordType == kHFSPlusFolderRecord){
+            CatalogRecordList* theList = NULL;
+            cleanup([&]{
+                safeFreeCustom(theList, releaseCatalogRecordList);
+            });
+            std::string self = path;
+            if (self.back() != '/') self += '/';
+            ret.push_back(self);
+            for (CatalogRecordList* list = (theList = getFolderContents(((HFSPlusCatalogFolder*)record)->folderID, _hfs)); list; list = list->next) {
+                char *curname = NULL;
+                cleanup([&]{
+                    safeFree(curname);
+                });
+                curname = unicodeToAscii(&list->name);
+                std::string cur = self + curname;
+                if (strncmp(curname, ".HFS+ Private Directory Data", sizeof(".HFS+ Private Directory Data")-1) == 0) continue;
+                if (!strlen(curname)) continue;
+                if(list->record->recordType == kHFSPlusFolderRecord) {
+                    auto retlist = listFilesAtPathHFS(cur.c_str(), recursive);
+                    ret.insert(ret.end(), retlist.begin(), retlist.end());
+                } else if(list->record->recordType == kHFSPlusFileRecord) {
+                    ret.push_back(cur);
+                }
+            }
+        }else{
+            return {path};
+        }
+    } else {
+        return {path};
+    }
+    return ret;
 }
 
 #pragma mark public
@@ -90,6 +134,16 @@ tihmstar::Mem RPRamdisk::extractFile(const char *path){
 void RPRamdisk::putFile(const char *path, const void *buf, size_t bufSize){
     return putFileHFS(path, buf, bufSize);
     reterror("No ramdisk backend available for file creation");
+}
+
+void RPRamdisk::removeFile(const char *path){
+    return removeFileHFS(path);
+    reterror("No ramdisk backend available for file deleting");
+}
+
+std::vector<std::string> RPRamdisk::listFilesAtPath(const char *path, bool recursive){
+    return listFilesAtPathHFS(path, recursive);
+    reterror("No ramdisk backend available for file listing");
 }
 
 void RPRamdisk::growRamdisk(size_t size){

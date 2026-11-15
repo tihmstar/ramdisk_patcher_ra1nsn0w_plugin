@@ -36,8 +36,8 @@ if test "$libdir" = '${exec_prefix}/lib' ; then
   libdir='${HOME}/.rainsn0w_plugins'
 fi
 
-CXXFLAGS+=" -std=c++11 -O3"
-CFLAGS+=" -std=c11"
+CXXFLAGS+=" -std=c++23 -O3"
+CFLAGS+=" -std=c23"
 
 # Checks for libraries.
 LIBGENERAL_REQUIRES_STR="libgeneral >= 92"

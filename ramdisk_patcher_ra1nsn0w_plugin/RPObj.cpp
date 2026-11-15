@@ -47,7 +47,7 @@ RPObj::RPObj()
 }
 
 RPObj::~RPObj(){
-    info("~RPObj");
+    //
 }
 
 #pragma mark public
@@ -80,6 +80,17 @@ bool RPObj::wantsPatchingRamdisk(){
 
 tihmstar::Mem RPObj::ramdiskPatcher(const void *buf, size_t bufSize){
     RPRamdisk ramdisk(buf, bufSize);
+    
+//    if (_haveAnyRamdiskPatchesEnabled) {
+//        info("[Ramdisk] Making room for our changes");
+//        auto files = ramdisk.listFilesAtPath("/", true);
+//        for (auto f : files) {
+//            if (f.ends_with(".png")){
+//                debug("[Ramdisk] deleting '%s'",f.c_str());
+//                ramdisk.removeFile(f.c_str());
+//            }
+//        }
+//    }
     
     {
         tihmstar::Mem asr;

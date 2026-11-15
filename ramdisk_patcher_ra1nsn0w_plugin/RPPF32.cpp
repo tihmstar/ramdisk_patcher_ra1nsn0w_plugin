@@ -67,14 +67,6 @@ std::vector<patch> RPPF32::getASRSigcheckPatches(){
             }
         }
     }
-    
-    {
-        /*
-            iPhone5,2 iOS 9.3.5
-         */
-        //missing
-    }
-    
     RETCACHEPATCHES;
 }
 

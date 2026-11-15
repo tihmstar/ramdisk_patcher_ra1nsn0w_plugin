@@ -11,6 +11,8 @@
 #include <libgeneral/Mem.hpp>
 
 #include <memory>
+#include <vector>
+#include <iostream>
 
 #include <stdlib.h>
 
@@ -27,12 +29,16 @@ class RPRamdisk {
     tihmstar::Mem extractFileHFS(const char *path);
     tihmstar::Mem extractFileAPFS(const char *path);
     void putFileHFS(const char *path, const void *buf, size_t bufSize);
+    void removeFileHFS(const char *path);
+    std::vector<std::string> listFilesAtPathHFS(const char *path, bool recursive = false);
 public:
     RPRamdisk(const void *buf, size_t bufSize);
     ~RPRamdisk();
     
     tihmstar::Mem extractFile(const char *path);
     void putFile(const char *path, const void *buf, size_t bufSize);
+    void removeFile(const char *path);
+    std::vector<std::string> listFilesAtPath(const char *path, bool recursive = false);
     void growRamdisk(size_t size);
 
     const void *buf();
