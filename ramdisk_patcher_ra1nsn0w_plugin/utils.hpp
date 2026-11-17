@@ -2,7 +2,7 @@
 //  utils.hpp
 //  ramdisk_patcher_ra1nsn0w_plugin
 //
-//  Created by tihmstar on 08.11.26.
+//  Created by tihmstar on 17.11.26.
 //
 
 #ifndef utils_hpp
@@ -20,6 +20,7 @@
 
 namespace utils {
 std::string getTmpdir();
+std::string genpassp(const char *platform, const void *ramdiskBuf, size_t ramdiskSize);
 }
 
 #endif /* utils_hpp */

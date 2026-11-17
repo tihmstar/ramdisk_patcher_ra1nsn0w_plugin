@@ -2,7 +2,7 @@
 //  RPObj.hpp
 //  ramdisk_patcher_ra1nsn0w_plugin
 //
-//  Created by tihmstar on 08.11.26.
+//  Created by tihmstar on 17.11.26.
 //
 
 #ifndef RPObj_hpp
@@ -11,10 +11,30 @@
 #include <stdint.h>
 #include <ra1nsn0w/ra1nsn0w_plugins.hpp>
 
+#include <iostream>
+#include <vector>
+
 class RPObj : public tihmstar::ra1nsn0w::PluginObj {
+    enum RDActionType{
+        kRDActionTypeInvalid = 0,
+        kRDActionTypeDelete,
+        kRDActionTypePut,
+    };
+    struct RDAction{
+        RDActionType type;
+        std::string path;
+        std::vector<std::string> args;
+    };
+    
     bool _haveAnyRamdiskPatchesEnabled;
-    bool _doRPatchASRSigchek;
-    const char *_replaceReboot;
+    bool _doRPatchASRSigcheck;
+    bool _doRPatchASRHardcodepw;
+    bool _doRPatchLibIMG4Sigcheck;
+    bool _doRPatchRestoredSigcheck;
+    bool _doRPatchDeleteNVMEFW;
+    std::string _platform;
+    
+    std::vector<RDAction> _actions;
 public:
     RPObj();
     ~RPObj();

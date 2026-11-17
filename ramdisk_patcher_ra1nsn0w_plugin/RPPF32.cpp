@@ -20,6 +20,19 @@ using namespace tihmstar::patchfinder;
 using namespace tihmstar::libinsn;
 using namespace tihmstar::libinsn::arm32;
 
+#pragma mark reexpose
+const void *RPPF32::buf(){
+    return tihmstar::patchfinder::machopatchfinder32::machopatchfinder32::buf();
+}
+
+size_t RPPF32::bufSize(){
+    return tihmstar::patchfinder::machopatchfinder32::machopatchfinder32::bufSize();
+}
+
+const void *RPPF32::memoryForLoc(tihmstar::patchfinder::patchfinder::loc_t loc){
+    return tihmstar::patchfinder::machopatchfinder32::machopatchfinder32::memoryForLoc(loc);
+}
+
 #pragma mark public
 std::vector<patch> RPPF32::getASRSigcheckPatches(){
     UNCACHEPATCHES;
@@ -70,25 +83,58 @@ std::vector<patch> RPPF32::getASRSigcheckPatches(){
     RETCACHEPATCHES;
 }
 
-void RPPF32::applyPatches(std::vector<tihmstar::patchfinder::patch> patches){
-    for (auto p : patches) {
-        uint8_t *file = (uint8_t*)buf();
-        uint64_t off = (uint64_t)((const uint8_t *)memoryForLoc(p._location) - file);
-#ifdef DEBUG
-        printf("RPPF32: Applying patch=%p : ",(void*)p._location);
-        for (int i=0; i<p.getPatchSize(); i++) {
-            printf("%02x",((uint8_t*)p.getPatch())[i]);
-        }
-        if (p.getPatchSize() == 4) {
-            printf(" 0x%08x",*(uint32_t*)p.getPatch());
-        } else if (p.getPatchSize() == 2) {
-            printf(" 0x%04x",*(uint16_t*)p.getPatch());
-        }
-        printf("\n");
-#endif
-        memcpy(&file[off], p.getPatch(), p.getPatchSize());
+std::vector<tihmstar::patchfinder::patch> RPPF32::getASRHardcodedPWPatches(const char *rootfsPW){
+    std::vector<patch> patches;
+    loc_t str = findstr("Couldn't read device", true);
+    debug("str=0x%016llx",str);
+
+    loc_t ref = find_literal_ref(str);
+    debug("ref=0x%016llx",ref);
+
+    loc_t bof = find_bof(ref);
+    debug("bof=0x%016llx",bof);
+    
+    loc_t CFStringCreateWithCString = find_sym_stub("_CFStringCreateWithCString");
+    debug("CFStringCreateWithCString=0x%016llx",CFStringCreateWithCString);
+
+    loc_t kCFAllocatorDefault = find_lazy_sym_loc("_kCFAllocatorDefault");
+    debug("kCFAllocatorDefault=0x%016llx",kCFAllocatorDefault);
+
+    uint32_t shellcode_insn_cnt = 19; //commitment
+    loc_t shellcode = bof;
+    debug("shellcode=0x%016llx",shellcode);
+
+#define cPC (shellcode+(insnNum)*2)
+#define pushINSNCPC(_pinsn) do {auto _pinsnn = _pinsn; pushINSN(_pinsnn); insnNum += (_pinsnn.insnsize()>>1);} while (0);
+
+    int insnNum = 0;
+    {
+        uint32_t val = kCFAllocatorDefault-(shellcode+(insnNum*2)+3*4);
+        pushINSNCPC(thumb::new_T3_immediate_movw(cPC, val, 0));
+        pushINSNCPC(thumb::new_T1_immediate_movt(cPC, val>>16, 0));
+        pushINSNCPC(thumb::new_T2_register_add(cPC, 0, 15));
     }
-#ifdef DEBUG
-    debug("RPPF32: Patches applied!");
-#endif
+    pushINSNCPC(thumb::new_T1_immediate_ldr(cPC, 0, 0, 0));
+    pushINSNCPC(thumb::new_T3_immediate_movw(cPC, 0x100, 2));
+    pushINSNCPC(thumb::new_T1_immediate_movt(cPC, 0x800, 2));
+    pushINSNCPC(thumb::new_T1_immediate_movs(cPC, 2, 1));
+    {
+        uint32_t val = CFStringCreateWithCString-(shellcode+(insnNum*2)+3*4);
+        pushINSNCPC(thumb::new_T3_immediate_movw(cPC, val, 3));
+        pushINSNCPC(thumb::new_T1_immediate_movt(cPC, val>>16, 3));
+        pushINSNCPC(thumb::new_T2_register_add(cPC, 3, 15));
+    }
+    pushINSNCPC(thumb::new_T2_register_add(cPC, 1, 15));
+    pushINSNCPC(thumb::new_T1_immediate_ldr(cPC, 0, 0, 0));
+    pushINSNCPC(thumb::new_T1_general_bx(cPC, 3));
+    assure(insnNum == shellcode_insn_cnt);
+#undef cPC
+    
+    patches.push_back({
+        shellcode+shellcode_insn_cnt*2,
+        rootfsPW,
+        strlen(rootfsPW)+1
+    });
+
+    return patches;
 }

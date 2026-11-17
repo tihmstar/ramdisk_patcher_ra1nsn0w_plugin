@@ -2,7 +2,7 @@
 //  utils.cpp
 //  ramdisk_patcher_ra1nsn0w_plugin
 //
-//  Created by tihmstar on 08.11.26.
+//  Created by tihmstar on 17.11.26.
 //
 
 #include "utils.hpp"
@@ -11,6 +11,42 @@
 #include <unistd.h>
 
 #include <libgeneral/macros.h>
+#include <libgeneral/ByteOrder.hpp>
+#include <libgeneral/Mem.hpp>
+#include <libgeneral/Utils.hpp>
+
+#include <openssl/sha.h>
+
+#ifdef XCODE
+static void DumpHex(const void* data, size_t size) {
+    char ascii[17];
+    size_t i, j;
+    ascii[16] = '\0';
+    for (i = 0; i < size; ++i) {
+        printf("%02X ", ((unsigned char*)data)[i]);
+        if (((unsigned char*)data)[i] >= ' ' && ((unsigned char*)data)[i] <= '~') {
+            ascii[i % 16] = ((unsigned char*)data)[i];
+        } else {
+            ascii[i % 16] = '.';
+        }
+        if ((i+1) % 8 == 0 || i+1 == size) {
+            printf(" ");
+            if ((i+1) % 16 == 0) {
+                printf("|  %s \n", ascii);
+            } else if (i+1 == size) {
+                ascii[(i+1) % 16] = '\0';
+                if ((i+1) % 16 <= 8) {
+                    printf(" ");
+                }
+                for (j = (i+1) % 16; j < 16; ++j) {
+                    printf("   ");
+                }
+                printf("|  %s \n", ascii);
+            }
+        }
+    }
+}
+#endif
 
 std::string utils::getTmpdir(){
     static std::string tmpdir;
@@ -68,4 +104,98 @@ std::string utils::getTmpdir(){
         debug("tmpdir=%s",tmpdir.c_str());
     }
     return tmpdir;
+}
+
+std::string utils::genpassp(const char *platform, const void *ramdiskBuf, size_t ramdiskSize){
+    uint8_t platformHash[SHA_DIGEST_LENGTH] = {};
+    uint64_t magic[4] = {
+        0xAD79D29DE5E2AC9EULL,
+        0xE6AF2EB19E23925BULL,
+        0x3F1375B4BD88815CULL,
+        0x3BDFF4E5564A9F87ULL,
+    };
+    uint32_t salt[4] = {};
+    SHA256_CTX ctx = {};
+    
+    SHA1((const uint8_t*)platform, strlen(platform), platformHash);
+    
+    {
+        uint64_t pepper = cnvBETOH(*(uint64_t*)platformHash);
+        magic[0] += pepper;
+        magic[1] += pepper;
+        magic[2] += pepper;
+        magic[3] += pepper;
+    }
+    
+    SHA256_Init(&ctx);
+    SHA256_Update(&ctx, magic, sizeof(magic));
+    
+    for (int i=0; i<ARRAYOF(salt); i++) {
+        salt[i] = (magic[i] % ramdiskSize) & 0xFFFFFE00;
+    }
+    
+    qsort(salt, 4, 4, [](const void *a, const void *b)->int{
+        return (*(uint32_t*)a) > (*(uint32_t*)b);
+    });
+    
+    {
+        bool move = true;
+        for (int i=0; i<ARRAYOF(salt); i++) {
+            if (move) magic[i] = salt[i];
+            if (i+1< ARRAYOF(salt)){
+                uint64_t diff = salt[i+1] - salt[i];
+                if (diff < 0x4000) {
+                    magic[i] += diff<<32;
+                    move = false;
+                    continue;
+                }
+            }
+            uint64_t left = ramdiskSize - salt[i];
+            if (left > 0x4000) left = 0x4000;
+            magic[i] += left<<32;
+            move = true;
+        }
+        if (ramdiskSize - salt[3] < 0x4000){
+            memmove(&magic[1], &magic[0], sizeof(magic) - sizeof(*magic));
+            magic[0] = ((uint64_t)(salt[3] + 0x4000 - ramdiskSize)) << 32;
+        }
+    }
+    
+    {
+        uint32_t *v54 = (uint32_t*)magic;
+        uint64_t ramdiskSizeInBlocks = ramdiskSize >> 9;
+        int j = 0;
+        uint64_t chunkInBlocks = 0;
+        for (uint32_t offsetInBlocks = 0; offsetInBlocks < ramdiskSizeInBlocks; offsetInBlocks += chunkInBlocks) {
+            chunkInBlocks = ramdiskSizeInBlocks - offsetInBlocks;
+            if (chunkInBlocks > 2048) chunkInBlocks = 2048;
+
+            uint64_t offsetInBytes = offsetInBlocks << 9;
+            const uint8_t *buf = ((const uint8_t*)ramdiskBuf) + offsetInBytes;
+            SHA256_Update(&ctx, buf, chunkInBlocks << 9);
+
+            uint64_t chunkEnd = (chunkInBlocks << 9) + offsetInBytes;
+
+            for (int i = j; i < 4; i++) {
+                uint64_t offset = v54[2 * i];
+                uint64_t len = v54[2 * i + 1] + offset;
+                if (offsetInBytes >= len) {
+                    j = i + 1;
+                } else {
+                    if (chunkEnd <= offset) break;
+                    if (offsetInBytes > offset) offset = offsetInBytes;
+                    if (chunkEnd < len) len = (chunkInBlocks << 9) + offsetInBytes;
+                    SHA256_Update(&ctx, buf + offset - offsetInBytes, len - offset);
+                }
+            }
+        }
+    }
+    {
+        char hashstr[65] = {};
+        size_t hashstrSize = sizeof(hashstr);
+        uint8_t digest[32] = {};
+        SHA256_Final(digest, &ctx);
+        tihmstar::bytesToHex(digest, sizeof(digest), hashstr, &hashstrSize);
+        return hashstr;
+    }
 }

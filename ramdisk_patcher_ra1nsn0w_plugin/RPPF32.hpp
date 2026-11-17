@@ -8,14 +8,21 @@
 #ifndef RPPF32_hpp
 #define RPPF32_hpp
 
+#include "RPPF.hpp"
 #include <libpatchfinder/machopatchfinder32.hpp>
 
-class RPPF32 : public tihmstar::patchfinder::machopatchfinder32 {
+class RPPF32 : public tihmstar::patchfinder::machopatchfinder32, public RPPF {
 public:
     using tihmstar::patchfinder::machopatchfinder32::machopatchfinder32;
     
-    std::vector<tihmstar::patchfinder::patch> getASRSigcheckPatches();
+#pragma mark reexpose
+    virtual const void *buf() override;
+    virtual size_t bufSize() override;
+    virtual const void *memoryForLoc(tihmstar::patchfinder::patchfinder::loc_t loc) override;
     
-    void applyPatches(std::vector<tihmstar::patchfinder::patch> patches);
+#pragma mark patches
+    virtual std::vector<tihmstar::patchfinder::patch> getASRSigcheckPatches() override;
+    
+    virtual std::vector<tihmstar::patchfinder::patch> getASRHardcodedPWPatches(const char *rootfsPW) override;
 };
 #endif /* RPPF32_hpp */

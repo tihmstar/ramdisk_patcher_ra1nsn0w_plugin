@@ -43,10 +43,14 @@ CFLAGS+=" -std=c23"
 LIBGENERAL_REQUIRES_STR="libgeneral >= 92"
 LIBRA1NSN0W_REQUIRES_STR="libra1nsn0w >= 63"
 LIBPATCHFINDER_REQUIRES_STR="libpatchfinder >= 178"
+LIBRAMDISK_REQUIRES_STR="libramdisk >= 1"
+OPENSSL_REQUIRES_STR="openssl >= 3.0.0"
 
 PKG_CHECK_MODULES(libgeneral, $LIBGENERAL_REQUIRES_STR)
 PKG_CHECK_MODULES(libra1nsn0w, $LIBRA1NSN0W_REQUIRES_STR)
 PKG_CHECK_MODULES(libpatchfinder, $LIBPATCHFINDER_REQUIRES_STR)
+PKG_CHECK_MODULES(libramdisk, $LIBRAMDISK_REQUIRES_STR)
+PKG_CHECK_MODULES(openssl, $OPENSSL_REQUIRES_STR)
 
 AC_ARG_ENABLE([debug],
             [AS_HELP_STRING([--enable-debug],
@@ -64,7 +68,7 @@ LT_INIT
 
 AC_CHECK_FUNCS([mkdtemp])
 
-LDFLAGS+=" -no-undefined -lcommon -ldmg -lhfs -lz"
+LDFLAGS+=" -no-undefined"
 
 AC_CONFIG_FILES([Makefile
                 ramdisk_patcher_ra1nsn0w_plugin/Makefile])

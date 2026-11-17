@@ -2,7 +2,7 @@
 //  plugin.cpp
 //  ramdisk_patcher_ra1nsn0w_plugin
 //
-//  Created by tihmstar on 08.11.26.
+//  Created by tihmstar on 17.11.26.
 //
 
 #include "RPObj.hpp"
@@ -18,13 +18,23 @@ using namespace tihmstar::ra1nsn0w;
 static const char helpscreen[] =
 "Ramdisk Patcher:\n"
 "      --rpatch-asr-sigcheck\t\t\tPatch ASR Sigchecks (inside ramdisk)\n" \
-"      --rdisk-replace-reboot <PATH>\t\tReplace /sbin/reboot with custom file\n" \
+"      --rpatch-asr-hardcodepw\t\t\tPatch ASR to hardcode rootfs pw\n" \
+"      --rpatch-libimg4-sigcheck\t\t\tPatch libimg4 Sigchecks (inside ramdisk)\n" \
+"      --rpatch-restored-sigcheck\t\tPatch restored external Sigchecks (inside ramdisk)\n" \
+"      --rpatch-delete-nvmefw\t\t\tDelete nvme firmware (inside ramdisk)\n" \
+"      --rpatch-rm <PATH>\t\t\tDelete PATH inside ramdisk (recursively)\n" \
+"      --rpatch-put [<SRC>,]<DST>\t\tPut file from local <src> to <dst> on ramdisk, if <SRC> is omitted an empty file is created\n" \
 "\n"
 ;
 
 static struct option longopts[] = {
-    { "rpatch-asr-sigcheck",        no_argument,            NULL,  0  },
-    { "rdisk-replace-reboot",       required_argument,      NULL,  0  },
+    { "rpatch-asr-sigcheck",        no_argument,        NULL,  0  },
+    { "rpatch-asr-hardcodepw",      no_argument,        NULL,  0  },
+    { "rpatch-libimg4-sigcheck",    no_argument,        NULL,  0  },
+    { "rpatch-restored-sigcheck",   no_argument,        NULL,  0  },
+    { "rpatch-delete-nvmefw",       no_argument,        NULL,  0  },
+    { "rpatch-rm",                  required_argument,  NULL,  0  },
+    { "rpatch-put",                 required_argument,  NULL,  0  },
     { NULL, 0, NULL, 0 }
 };
 
@@ -34,7 +44,7 @@ static std::shared_ptr<PluginObj> RPObj_init(void){
 
 Plugin pluginDef = {
     .apiVersion = RA1NSN0W_PLUGIN_API_VERSION,
-    .pluginName = "ramdisk_patcher",
+    .pluginName = "ramdisk_patcher_ra1nsn0w_plugin",
     .cmdHelp = helpscreen,
     .longopts = longopts,
     .init = RPObj_init,

@@ -1,6 +1,6 @@
-AM_CFLAGS = $(libapfstool_CFLAGS) $(libgeneral_CFLAGS) $(libra1nsn0w_CFLAGS) $(libpatchfinder_CFLAGS)
+AM_CFLAGS = $(libapfstool_CFLAGS) $(libgeneral_CFLAGS) $(libhfstool_CFLAGS) $(libinsn_CFLAGS) $(libpatchfinder_CFLAGS) $(libra1nsn0w_CFLAGS) $(libramdisk_CFLAGS) $(openssl_CFLAGS)
 AM_CXXFLAGS = $(AM_CFLAGS)
-AM_LDFLAGS = $(libapfstool_LIBS) $(libgeneral_LIBS) $(libpatchfinder_LIBS)
+AM_LDFLAGS = $(libapfstool_LIBS) $(libgeneral_LIBS) $(libhfstool_LIBS) $(libinsn_LIBS) $(libpatchfinder_LIBS) $(libramdisk_LIBS) $(openssl_LIBS)
 
 lib_LTLIBRARIES = libramdisk_patcher_ra1nsn0w_plugin.la
 
@@ -8,6 +8,7 @@ libramdisk_patcher_ra1nsn0w_plugin_la_CPPFLAGS = $(AM_CFLAGS)
 libramdisk_patcher_ra1nsn0w_plugin_la_LIBADD = $(AM_LDFLAGS)
 libramdisk_patcher_ra1nsn0w_plugin_la_SOURCES = plugin.cpp \
                                                 RPObj.cpp \
+                                                RPPF.cpp \
                                                 RPPF32.cpp \
-                                                RPRamdisk.cpp \
+                                                RPPF64.cpp \
                                                 utils.cpp
